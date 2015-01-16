@@ -21,6 +21,13 @@ var CountScreen = new UI.Window();
 var TitleText = new UI.Text({ position: new Vector2(0,0), size: new Vector2(144, 168) });
 var CounterText = new UI.Text({ position: new Vector2(0,25), size: new Vector2(144, 168) });
 
+//lower hertz Values
+Accel.config({
+   rate: 10,
+   sample: 5,
+   subscribe: false
+});
+
 var xAxis = 0;
 var yAxis = 0;
 var zAxis = 0;
@@ -49,26 +56,29 @@ function onClick(e) {
    CountScreen.insert(0,TitleText);
    console.log("Title text added");
    CountScreen.show();
-   CountScreen.on('click','select',onAccelSelect);
-   CountScreen.on('click','back',onAccelSelect);
+   CountScreen.on('click','back',onAccelBack);   
    Accel.on('data', onPeek);         
 }
 
 //Close Screen and Stop loop
-function onAccelSelect(){
-   
+function onAccelSelect(e){   
+   console.log('Post Array');
+   console.log('Current data samples are: ' + e.samples); 
+}
+
+//Close Screen and Stop loop
+function onAccelBack(){
    console.log('Close Screen and Stop Loop');
    inWristCount = false;
    CountScreen.hide();   
 }
-
 //Get Values for Acelerometer
-function onPeek(e){
+function onPeek(e){   
    if (inWristCount === true){
       console.log('Peeking'); 
       xAxis = e.accel.x;
       yAxis = e.accel.y;
-      zAxis = e.accel.z;
+      zAxis = e.accel.z;      
       insertElements();       
    }
    else{
@@ -77,12 +87,17 @@ function onPeek(e){
       Accel.config({
          subscribe: false
       });
+   CountScreen.on('click','select',onAccelSelect(e));
    }      
 }
 
+//
+function detectWristRoll(){
+      //placeholder
+}
 //Insert onto screen
 function insertElements() { 
-   CounterText.text('Number of Occurances:' + counter);
+   CounterText.text('Number of Occurances: ' + counter);
    CountScreen.insert(1,CounterText);
    CountScreen.show();
 }
