@@ -32,8 +32,8 @@ var inAccelScreen = false;
 //start App screen
 var main = new UI.Card({   
    icon: 'images/menu_icon.png',
-   subtitle: 'Real Time Tracking',
-   body: 'Press the select button to go to start real time monitering.',
+   subtitle: 'Wrist Twist',
+   body: 'Press the select button to start the counter.',
    scrollable: true
 });
 
@@ -45,12 +45,13 @@ main.on('click', 'select', onClick);
 
 function onClick(e) {
    inAccelScreen = true;
-   console.log('Entered Tracker');
+   console.log('Entered Counter');
    AxisDisplayText.text('Real time acceleration');
    AccelerometerScreen.insert(0,AxisDisplayText);
    console.log("Enter Real Time Loop");
    AccelerometerScreen.show();
    AccelerometerScreen.on('click','select',onAccelSelect);
+   AccelerometerScreen.on('click','back',onAccelSelect);
    Accel.on('data', onPeek);         
 }
 
