@@ -16,18 +16,17 @@ var UI = require('ui');
 //get vector Pebble Libary
 var Vector2 = require('vector2');
 //Screen for real time results
-var AccelerometerScreen = new UI.Window();
+var CountScreen = new UI.Window();
 //Elements for AccelerometerScreen
-var AxisDisplayText = new UI.Text({ position: new Vector2(0,0), size: new Vector2(144, 168) });
-var xAxisText = new UI.Text({ position: new Vector2(0,50), size: new Vector2(144, 168) });
-var yAxisText = new UI.Text({ position: new Vector2(0,75), size: new Vector2(144, 168) });
-var zAxisText = new UI.Text({ position: new Vector2(0,100), size: new Vector2(144, 168) });
+var TitleText = new UI.Text({ position: new Vector2(0,0), size: new Vector2(144, 168) });
+var CounterText = new UI.Text({ position: new Vector2(0,25), size: new Vector2(144, 168) });
 
 var xAxis = 0;
 var yAxis = 0;
 var zAxis = 0;
+var counter = 0;
 
-var inAccelScreen = false;
+var inWristCount = false;
 
 //start App screen
 var main = new UI.Card({   
@@ -44,14 +43,14 @@ main.on('click', 'select', onClick);
 
 
 function onClick(e) {
-   inAccelScreen = true;
+   inWristCount = true;
    console.log('Entered Counter');
-   AxisDisplayText.text('Real time acceleration');
-   AccelerometerScreen.insert(0,AxisDisplayText);
-   console.log("Enter Real Time Loop");
-   AccelerometerScreen.show();
-   AccelerometerScreen.on('click','select',onAccelSelect);
-   AccelerometerScreen.on('click','back',onAccelSelect);
+   TitleText.text('Counter Screen');
+   CountScreen.insert(0,TitleText);
+   console.log("Title text added");
+   CountScreen.show();
+   CountScreen.on('click','select',onAccelSelect);
+   CountScreen.on('click','back',onAccelSelect);
    Accel.on('data', onPeek);         
 }
 
@@ -59,13 +58,13 @@ function onClick(e) {
 function onAccelSelect(){
    
    console.log('Close Screen and Stop Loop');
-   inAccelScreen = false;
-   AccelerometerScreen.hide();   
+   inWristCount = false;
+   CountScreen.hide();   
 }
 
 //Get Values for Acelerometer
 function onPeek(e){
-   if (inAccelScreen === true){
+   if (inWristCount === true){
       console.log('Peeking'); 
       xAxis = e.accel.x;
       yAxis = e.accel.y;
@@ -74,7 +73,7 @@ function onPeek(e){
    }
    else{
       console.log("emptyfunction");
-      AccelerometerScreen.hide();
+      CountScreen.hide();
       Accel.config({
          subscribe: false
       });
@@ -83,11 +82,7 @@ function onPeek(e){
 
 //Insert onto screen
 function insertElements() { 
-   xAxisText.text('X Axis:' + xAxis);
-   yAxisText.text('Y Axis:' + yAxis);
-   zAxisText.text('Z Axis:' + zAxis);
-   AccelerometerScreen.insert(1,xAxisText);
-   AccelerometerScreen.insert(2,yAxisText);
-   AccelerometerScreen.insert(3,zAxisText); 
-   AccelerometerScreen.show();
+   CounterText.text('Number of Occurances:' + counter);
+   CountScreen.insert(1,CounterText);
+   CountScreen.show();
 }
