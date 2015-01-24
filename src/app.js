@@ -23,7 +23,7 @@ var CounterText = new UI.Text({ position: new Vector2(0,25), size: new Vector2(1
 
 //lower hertz Values
 Accel.config({
-   rate: 10,
+   rate: 25,
    sample: 5,
    subscribe: false
 });
@@ -57,7 +57,7 @@ function onClick(e) {
    console.log("Title text added");
    CountScreen.show();
    CountScreen.on('click','back',onAccelBack);   
-   Accel.on('data', onPeek);         
+   CountScreen.on('accelData', onPeek);        
 }
 
 //Close Screen and Stop loop
@@ -73,12 +73,13 @@ function onAccelBack(){
    CountScreen.hide();   
 }
 //Get Values for Acelerometer
-function onPeek(e){   
+function onPeek(e){
+   console.log('Accel data: ' + JSON.stringify(e.accels));
    if (inWristCount === true){
       console.log('Peeking'); 
       xAxis = e.accel.x;
       yAxis = e.accel.y;
-      zAxis = e.accel.z;      
+      zAxis = e.accel.z;
       insertElements();       
    }
    else{
@@ -87,7 +88,7 @@ function onPeek(e){
       Accel.config({
          subscribe: false
       });
-   CountScreen.on('click','select',onAccelSelect(e));
+   
    }      
 }
 
