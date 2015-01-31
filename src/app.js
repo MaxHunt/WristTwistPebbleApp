@@ -21,7 +21,7 @@ var CountScreen = new UI.Window();
 var TitleText = new UI.Text({ position: new Vector2(0,0), size: new Vector2(144, 168) });
 var CounterText = new UI.Text({ position: new Vector2(0,25), size: new Vector2(144, 168) });
 //var gesture = [[{x:'',y:'',z:''},{x:'50',y:'200',z:'20',xpos:'true',xneg:'false',ypos:'true',yneg:'false',zpos:'true',zneg:'true'}]];//lower hertz Values
-var gesture = [[{x:'',y:'',z:''},{x:'50',y:'200',z:'20'},{x:'',y:'',z:''},{x:'50',y:'200',z:'20'}]];
+var gesture = [[{x:null,y:null,z:null},{x:50,y:200,ypos:true,z:20}],[{x:null,y:null,z:null},{x:50,y:200,z:20}]];
 Accel.config({
    rate: 25,
    sample: 5,
@@ -67,12 +67,12 @@ function onAccelBack(){
 }
 //Get Values for Acelerometer
 function onPeek(e){
-   console.log('Accel data: ' + JSON.stringify(e.accels));
+   //console.log('Accel data: ' + JSON.stringify(e.accels));
    if (inWristCount === true){
-      console.log('Peeking'); 
+      //console.log('Peeking'); 
       var frameArray = [];
       frameArray= arrayToFrames(e);
-      var detection = detectGesture(e,frameArray);
+      var detection = detectGesture(frameArray);
       insertElements(detection);       
    }
    else{
@@ -92,16 +92,20 @@ function arrayToFrames(e){
 	return (frameArray);
 }
 //
-function detectGesture(frameArray){
-   
+function detectGesture(frameArray){ 
    for (var i=0; i<(frameArray.length-1); i++){
+      //console.log(frameArray[i][0].vibe);
       if ((frameArray[i][0].vibe === true)||(frameArray[i][0].vibe === true)){
          //moveon , vibration discounts all gestures
+         //console.log("frame " + i + "failed" );
       }
       else{
+         //console.log("else");
          if (gesture[0][1].ypos===true){
-            if (Math.abs(frameArray[i][1].y-frameArray[i][0].x)>=gesture[0][1].y){
-               if(Math.abs(frameArray[i+1][1].y-frameArray[i+1][0].x)>=gesture[1][1].y){
+            //console.log("here");
+            if (Math.abs(frameArray[i][1].y-frameArray[i][0].y)>=gesture[0][1].y){
+               //console.log("Intial");
+               if(Math.abs(frameArray[i+1][1].y-frameArray[i+1][0].y)>=gesture[1][1].y){
                   console.log("Detection");
                   return(true);
                }
@@ -110,13 +114,14 @@ function detectGesture(frameArray){
             }             
          }
       }      
-   }    
-    return(false);  
+   }
+   console.log("No Detecion");
+   return(false);  
 }
 
 //Insert onto screen
-function insertElements(roll) {
-   if (roll===true){
+function insertElements(detection) {
+   if (detection===true){
       counter++;
    }
    CounterText.text('Number of Occurances: ' + counter);
