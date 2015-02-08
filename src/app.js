@@ -21,7 +21,7 @@ var CountScreen = new UI.Window();
 var TitleText = new UI.Text({ position: new Vector2(0,0), size: new Vector2(144, 168) });
 var CounterText = new UI.Text({ position: new Vector2(0,25), size: new Vector2(144, 168) });
 //var gesture = [[{x:'',y:'',z:''},{x:'50',y:'200',z:'20',xpos:'true',xneg:'false',ypos:'true',yneg:'false',zpos:'true',zneg:'true'}]];//lower hertz Values
-var gesture = [[{x:null,y:null,z:null},{x:50,y:200,ypos:true,z:20}],[{x:null,y:null,z:null},{x:50,y:200,z:20}]];
+var gesture = [[{x:null,y:null,z:null},{x:80,y:300,ypos:true,z:20}],[{x:null,y:null,z:null},{x:60,y:300,z:20}]];
 Accel.config({
    rate: 25,
    sample: 5,
@@ -102,20 +102,38 @@ function detectGesture(frameArray){
       else{
          //console.log("else");
          if (gesture[0][1].ypos===true){
-            //console.log("here");
-            if (Math.abs(frameArray[i][1].y-frameArray[i][0].y)>=gesture[0][1].y){
-               //console.log("Intial");
-               if(Math.abs(frameArray[i+1][1].y-frameArray[i+1][0].y)>=gesture[1][1].y){
-                  console.log("Detection");
-                  return(true);
+            //start with y
+            if (Math.abs(frameArray[i][1].z-frameArray[i][0].z)>=gesture[0][1].z){
+               // z 1 first frame
+               if(Math.abs(frameArray[i+1][1].z-frameArray[i+1][0].z)>=gesture[1][1].z){
+                  //z 2 second frame
+                  if (Math.abs(frameArray[i][1].y-frameArray[i][0].y)>=gesture[0][1].y){
+                     //y 1 first frame
+                     if(Math.abs(frameArray[i+1][1].y-frameArray[i+1][0].y)>=gesture[1][1].y){
+                        // y 2nd frame
+                        if (Math.abs(frameArray[i][1].x-frameArray[i][0].x)>=gesture[0][1].x){
+                           // x 1st frame
+                           if(Math.abs(frameArray[i+1][1].x-frameArray[i+1][0].x)>=gesture[1][1].x){
+                              // x 2nd frame
+                              console.log("Detection");
+                              Accel.config({subscribe: false});
+                              setTimeout(function(){
+                                 Accel.config({subscribe: true});                                 
+                              }, 1000);
+                              return(true);
+                           }
+                        }
+                     }
+                  }
                }
             }
-            else{
-            }             
          }
+         else{
+         }             
+         
       }      
    }
-   console.log("No Detecion");
+   //console.log("No Detecion");
    return(false);  
 }
 
